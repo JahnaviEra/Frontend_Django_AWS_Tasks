@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #007bff;
+            color: white;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .logout-button {
+            padding: 8px 16px;
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .logout-button:hover {
+            background-color: #c9302c;
+        }
+        .container {
+            display: flex;
+            border: #333;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .contact-box {
+            background-color: #9a8c8ca6;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        .contact-box h3 {
+            margin: 0;
+            margin-bottom: 10px;
+            color: #333;
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        li {
+            background-color: #f0e9e9;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .last-message {
+            font-size: 14px;
+            color: #555;
+            margin-top: 5px;
+            display: block;
+        }
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                align-items: center;
+            }
+            .header h2 {
+                text-align: center;
+                font-size: 20px;
+            }
+            .logout-button {
+                margin-top: 10px;
+                padding: 6px 12px;
+            }
+            .contact-box {
+                padding: 15px;
+            }
+            li {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Welcome, {{ request.user.username }}</h2>
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="logout-button">Logout</button>
+        </form>
+    </div>
+    
+    <div class="container">
+        <div class="contact-box">
+            <h3>Contact Info</h3>
+            <ul>
+                {% for user in users %}
+                    <li>
+                        <a class="user-name" href="{% url 'chat_with_user' user.id %}">{{ user.username }}</a>
+                        <div class="last-message">
+                            {{ user.last_message|default:"No messages yet." }}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

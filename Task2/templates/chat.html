@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with {{ recipient.username }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 70vh;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            margin-bottom: 10px;
+        }
+
+        .sender {
+            text-align: left;
+            color: #007bff;
+        }
+
+        .recipient {
+            text-align: right;
+            color: #28a745;
+        }
+
+        .input-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        input {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: #007bff;
+            margin-top: 10px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Chat with {{ recipient.username }}</h2>
+    <a href="{% url 'chat_home' %}" class="back-link">Back to Home</a>
+
+    <div class="chat-container">
+        <div class="messages" id="messages">
+            {% for message in messages %}
+            <div class="message {% if message.sender == request.user %}sender{% else %}recipient{% endif %}">
+                <p><b>
+                        {% if message.sender == request.user %}
+                        You:
+                        {% else %}
+                        {{ message.sender.username }}:
+                        {% endif %}
+                    </b> {{ message.content }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <form method="POST" class="input-container">
+            {% csrf_token %}
+            <input type="text" name="content" placeholder="Type a message" required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <script>
+        // Auto-scroll to the bottom of the chat when the page is loaded or a new message is sent
+        const messagesContainer = document.getElementById('messages');
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    </script>
+</body>
+
+</html>
